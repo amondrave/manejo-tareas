@@ -8,7 +8,7 @@ Create class user manager for apply methods of create user and super_user
 """
 
 
-class UserManager(BaseException):
+class UserManager(BaseUserManager):
     def create_user(self, email, username, name, password=None):
         if not email:
             raise ValueError('El usuario debe tener un  correo electronico')
@@ -24,6 +24,9 @@ class UserManager(BaseException):
         user.user_manager = True
         user.save()
         return user
+
+    def get_by_natural_key(self, username):
+        return self.get(username=username)
 
 
 """
@@ -41,6 +44,7 @@ class User(AbstractBaseUser):
         upload_to='imagenes/', max_length=250, null=True, blank=True)
     user_active = models.BooleanField(default=True)
     user_manager = models.BooleanField(default=False)
+    objects = UserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name']
